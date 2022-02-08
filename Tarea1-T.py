@@ -47,7 +47,7 @@ def graph_func(x_label, y_label, eje_x, eje_y):
     
     plt.xlabel(x_label)
     plt.ylabel(y_label)
-    plt.barh(eje_x, eje_y)
+    plt.plot(eje_x, eje_y)
     plt.grid()
     plt.show()
 
@@ -60,8 +60,8 @@ def graficas():
     
     titulo_y = 'Numero de cadena'
     
-    graph_func('Numero de simbolos que tiene cada cadena',titulo_y,cadenas, largo)
-    graph_func('Numero de unos que tiene cada cadena',titulo_y,cadenas, unos)
+    graph_func('Numero de simbolos que tiene cada cadena',titulo_y,largo, cadenas)
+    graph_func('Numero de unos que tiene cada cadena',titulo_y,unos, cadenas)
     
     for i in largo:
         largolog.append(math.log(int(i),10))
@@ -74,9 +74,9 @@ def graficas():
             unoslog.append(math.log(int(i), 10))
     del unos
     
-    graph_func('Numero de simbolos que tiene cada cadena, Log10',titulo_y,cadenas, largolog)
+    graph_func('Numero de simbolos que tiene cada cadena, Log10',titulo_y,largolog, cadenas)
     del largolog
-    graph_func('Numero de unos que tiene cada cadena, Log10',titulo_y,cadenas, unoslog)
+    graph_func('Numero de unos que tiene cada cadena, Log10',titulo_y,unoslog, cadenas)
     del unoslog
     
     out_file = open("resultados.txt", "w")
@@ -148,7 +148,7 @@ if __name__ == "__main__":
             del opc
             del n
             del count
-            #graficas()
+            graficas()
             
             
         elif opc == 2:
