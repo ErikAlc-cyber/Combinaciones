@@ -2,6 +2,7 @@ import math
 import random
 import matplotlib.pyplot as plt
 import os
+from os import remove
 
 class Combinacion:
     def __init__(self, combinacion, numero_de_1, largo):
@@ -43,52 +44,45 @@ def llenas_array(in_file):
     
     return array
 
-def graph_func(x_label, y_label, eje_x, eje_y):
-    
-    plt.xlabel(x_label)
-    plt.ylabel(y_label)
-    plt.plot(eje_x, eje_y)
-    plt.grid()
-    plt.show()
+def primo(numero):
+    if numero == 4:
+        return False
+    for x in range(2, int(numero/2)):
+        if numero % x == 0:
+            return False
+    return True
 
-def graficas():
-    unos = llenas_array(open("unos.txt", "r"))
-    largo = llenas_array(open("largo.txt", "r"))
+def ingerir():
     cadenas = llenas_array(open("combinaciones.txt", "r"))
-    largolog = []
-    unoslog = []
-    
-    titulo_y = 'Numero de cadena'
-    
-    graph_func('Numero de simbolos que tiene cada cadena',titulo_y,largo, cadenas)
-    graph_func('Numero de unos que tiene cada cadena',titulo_y,unos, cadenas)
-    
-    for i in largo:
-        largolog.append(math.log(int(i),10))
-    del largo
-    
-    for i in unos:
-        if i == '0':
-            unoslog.append(int(i))
-        else:
-            unoslog.append(math.log(int(i), 10))
-    del unos
-    
-    graph_func('Numero de simbolos que tiene cada cadena, Log10',titulo_y,largolog, cadenas)
-    del largolog
-    graph_func('Numero de unos que tiene cada cadena, Log10',titulo_y,unoslog, cadenas)
-    del unoslog
-    
     out_file = open("resultados.txt", "w")
     out_file.write("L{e")
     
     for i in cadenas:
         out_file.write(", "+str(i))
     
-    out_file.write("}")
-    out_file.close()
+    out_file.write("}\n")
+    del cadenas
+    cadenas = llenas_array(open("unos.txt", "r"))
+    out_file.write("#1's{e")
     
+    for i in cadenas:
+        out_file.write(", "+str(i))
     
+    out_file.write("}\n")
+    del cadenas
+    cadenas = llenas_array(open("largo.txt", "r"))
+    out_file.write("# de Digitos{e")
+    
+    for i in cadenas:
+        out_file.write(", "+str(i))
+    
+    out_file.write("}\n")
+    del cadenas
+    out_file.close() 
+    
+    remove("combinaciones.txt")
+    remove("largo.txt")
+    remove("unos.txt")
 
 if __name__ == "__main__":
     while True:
@@ -116,15 +110,18 @@ if __name__ == "__main__":
                 break
             
             check = True
-            count = 0
+            count = 1
             
             filec = open("combinaciones.txt", "w")
             fileu = open("unos.txt", "w")
             filel = open("largo.txt", "w")
+            filep = open("primos.txt", "w")
             
             while check:
                 try:
                     cadena = bina(count)
+                    if(primo(count)):
+                        filep.write(str(cadena.numero)+"--"+ str(count)+" \n")
                     filec.write(str(cadena.numero)+"\n")
                     fileu.write(str(cadena.numero_de_1)+"\n")
                     filel.write(str(cadena.largo)+"\n")
@@ -136,6 +133,7 @@ if __name__ == "__main__":
                     filec.close()
                     fileu.close()
                     filel.close()
+                    filep.close()
                     exit()
                     
                 except KeyboardInterrupt:
@@ -144,11 +142,12 @@ if __name__ == "__main__":
             filec.close()
             fileu.close()
             filel.close()
+            filep.close()
             del aux
             del opc
             del n
             del count
-            graficas()
+            ingerir()
             
             
         elif opc == 2:
