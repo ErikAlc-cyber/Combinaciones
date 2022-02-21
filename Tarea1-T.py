@@ -2,6 +2,7 @@ import math
 import random
 import matplotlib.pyplot as plt
 import os
+import time
 from os import remove
 
 class Combinacion:
@@ -31,19 +32,6 @@ def bina(decimal):
     
     return Combinacion(binario, unos, len(strbinario))
 
-def llenas_array(in_file):
-    
-    array = []
-    
-    while True:
-        file_line = in_file.readline()
-        if not file_line:
-            in_file.close()
-            break
-        array.append(file_line.strip('\n'))
-    
-    return array
-
 def primo(numero):
     if numero == 4:
         return False
@@ -52,37 +40,68 @@ def primo(numero):
             return False
     return True
 
+def cleartext(out_file, file):
+    array=[]
+    in_file=open(file, "r")
+    while True:
+        file_line = in_file.readline()
+        if not file_line:
+            in_file.close() #cierro el archivo
+            break
+        array.append(file_line)
+        out_file.write(","+file_line.strip('\n'))
+    os.remove(file)
+    return array
+
 def ingerir():
-    cadenas = llenas_array(open("combinaciones.txt", "r"))
-    out_file = open("resultados.txt", "w")
-    out_file.write("L{e")
     
-    for i in cadenas:
-        out_file.write(", "+str(i))
+    out_file = open("resultados.txt", "w") #Abre el txt 
+    out_file.write("L{e") #escribo info en el txt
+    
+    combinaciones=cleartext(out_file, "combinaciones.txt")
     
     out_file.write("}\n")
-    del cadenas
-    cadenas = llenas_array(open("unos.txt", "r"))
     out_file.write("#1's{e")
     
-    for i in cadenas:
-        out_file.write(", "+str(i))
+    unos=cleartext(out_file, "unos.txt")
     
     out_file.write("}\n")
-    del cadenas
-    cadenas = llenas_array(open("largo.txt", "r"))
     out_file.write("# de Digitos{e")
     
-    for i in cadenas:
-        out_file.write(", "+str(i))
+    largo=cleartext(out_file, "largo.txt")
     
     out_file.write("}\n")
-    del cadenas
     out_file.close() 
+
+    #graficar(combinaciones, unos, "Combinaciones posibles", "# de unos")
+    #graficar(combinaciones, largo, "Combinaciones posibles", "# de digitos")
     
-    remove("combinaciones.txt")
-    remove("largo.txt")
-    remove("unos.txt")
+    #graficar(combinaciones, logrec(unos), "Combinaciones posibles log10", "# de unos")
+    #graficar(combinaciones, logrec(largo), "Combinaciones posibles log10", "# de digitos")
+    
+def logrec(array):
+    aux=[]
+    for i in array:
+        aux.append(math.log10(int(i)))
+    return aux
+    
+def graficar(x_axis, y_axis, titlex, titley):
+    try:
+        inicio = time.time()
+        fig, ax = plt.subplots()
+        ax.set_ylabel(titley)
+        ax.set_title(titlex)
+        ax.grid(False);
+        ax.plot(x_axis,y_axis)
+        ax.autoscale(enable=True, axis='both', tight=None)
+        plt.show()
+        fin = time.time()
+        print("El tiempo de ejecucion para la grafica: "+titlex+", "+titley+" es: "+str(fin-inicio))
+        
+    except (KeyboardInterrupt, BufferError):
+        fin = time.time()
+        print("El tiempo de ejecucion para la grafica: "+titlex+", "+titley+" es: "+str(fin-inicio))
+        pass
 
 if __name__ == "__main__":
     while True:
@@ -117,6 +136,7 @@ if __name__ == "__main__":
             filel = open("largo.txt", "w")
             filep = open("primos.txt", "w")
             
+            inicio = time.time()
             while check:
                 try:
                     cadena = bina(count)
@@ -139,10 +159,14 @@ if __name__ == "__main__":
                 except KeyboardInterrupt:
                     break
 
+            fin = time.time()
             filec.close()
             fileu.close()
             filel.close()
             filep.close()
+            print("El tiempo de ejecucion para n = "+str(n)+" es: "+str(fin-inicio))
+            del inicio
+            del fin
             del aux
             del opc
             del n
